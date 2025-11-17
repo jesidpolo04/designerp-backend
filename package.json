@@ -1,0 +1,45 @@
+{
+  "name": "notes-automator",
+  "version": "1.0.0",
+  "description": "Notes automator for scripting older academic notes systems",
+  "keywords": [
+    "scripting",
+    "playwright",
+    "scrapper"
+  ],
+  "license": "ISC",
+  "author": "Jesid Polo",
+  "type": "module",
+  "main": "src/main.ts",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "dev": "tsx watch src/main.ts | pino-pretty"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-validator": "^7.3.0",
+    "luxon": "^3.7.2",
+    "nanoid": "^5.1.6",
+    "pg": "^8.16.3",
+    "pino": "^10.1.0",
+    "tsx": "^4.20.6",
+    "typeorm": "^0.3.27",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/jest": "^30.0.0",
+    "@types/luxon": "^3.7.1",
+    "@types/supertest": "^6.0.3",
+    "jest": "^30.2.0",
+    "pg-mem": "^3.0.5",
+    "pino-pretty": "^13.1.2",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5"
+  }
+}
