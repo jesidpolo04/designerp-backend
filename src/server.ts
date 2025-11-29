@@ -3,6 +3,7 @@ import cors from "cors";
 import { DataSource } from "typeorm";
 import { appRouter } from "@/router";
 import { logger } from "./logging";
+import { contextMiddleware } from "./middlewares/context.middleware";
 
 export class Server {
   private readonly app: express.Application;
@@ -11,6 +12,7 @@ export class Server {
     this.app = express();
     this.app.use(cors());
     this.app.use(express.json());
+    this.app.use(contextMiddleware);
 
     // Store dataSource in app.locals for access in controllers
     if (dataSource) {
