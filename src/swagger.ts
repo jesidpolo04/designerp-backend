@@ -3,14 +3,14 @@ import { routeRegistry } from "@/decorators/metada.registry";
 
 // Importamos los controladores para que el código se ejecute y los decoradores se registren
 import "@/features/auth/controllers/auth.controller";
+import { logger } from "@/logging";
+import { th } from "zod/locales";
 
 export function generateSwaggerSpec() {
-  // 1. Generamos los esquemas de los DTOs (Solución al error de import: sin argumentos)
   const schemas = validationMetadatasToSchemas({
     refPointerPrefix: "#/components/schemas/",
   });
 
-  // 2. Estructura base de OpenAPI 3.0
   const swaggerDoc: any = {
     openapi: "3.0.0",
     info: {
@@ -29,6 +29,9 @@ export function generateSwaggerSpec() {
   // 3. Recorremos nuestro registro custom y llenamos "paths"
   routeRegistry.forEach((route) => {
     // Aseguramos que el path existe en el objeto (ej: paths["/users"] = {})
+    if (!route.path || !route.method) {
+      throw new Error("paths is undefined or null");
+    }
     if (!swaggerDoc.paths[route.path]) {
       swaggerDoc.paths[route.path] = {};
     }
