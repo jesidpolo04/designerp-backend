@@ -1,21 +1,25 @@
 import { Repository } from "typeorm";
 import { nanoid } from "nanoid";
-import { AppDataSource } from "@/database/postgres.config";
+import { injectable, inject } from "tsyringe";
+import { DateTime } from "luxon";
 import { User } from "@/features/auth/models/user";
 import { Genre } from "@/features/auth/models/genre";
 import { Rol } from "@/features/auth/models/rol";
 import { CreateUserDto } from "@/features/auth/dtos/create-user.dto";
+import {
+  USER_REPOSITORY,
+  GENRE_REPOSITORY,
+  ROL_REPOSITORY,
+} from "@/core/di/tokens";
 
+@injectable()
 export class CreateUserUseCase {
   constructor(
-    private readonly userRepository: Repository<User>,
+    @inject(USER_REPOSITORY) private readonly userRepository: Repository<User>,
+    @inject(GENRE_REPOSITORY)
     private readonly genreRepository: Repository<Genre>,
-    private readonly rolRepository: Repository<Rol>
-  ) {
-    this.userRepository = AppDataSource.getRepository(User);
-    this.genreRepository = AppDataSource.getRepository(Genre);
-    this.rolRepository = AppDataSource.getRepository(Rol);
-  }
+    @inject(ROL_REPOSITORY) private readonly rolRepository: Repository<Rol>
+  ) {}
 
   async execute(dto: CreateUserDto): Promise<User> {
     // 1. Verificar si el usuario o email ya existen
@@ -50,6 +54,8 @@ export class CreateUserUseCase {
       password: dto.password, // TODO: Hashear contraseña
       genre: genre,
       rol: rol,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     });
 
     // 4. Guardar

@@ -4,8 +4,8 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
+  BeforeInsert,
+  BeforeUpdate,
 } from "typeorm";
 import { DateTime } from "luxon";
 import { luxonTransformer } from "@/database/transformers/luxon.transformer";
@@ -38,14 +38,14 @@ export class User {
   @Column({ type: "varchar", length: 255 })
   password: string;
 
-  @CreateDateColumn({
+  @Column({
     name: "created_at",
     type: "timestamp",
     transformer: luxonTransformer,
   })
   createdAt: DateTime;
 
-  @UpdateDateColumn({
+  @Column({
     name: "updated_at",
     type: "timestamp",
     transformer: luxonTransformer,
@@ -59,4 +59,15 @@ export class User {
   @ManyToOne(() => Rol)
   @JoinColumn({ name: "rol_id" })
   rol: Rol;
+
+  @BeforeInsert()
+  setCreationDate() {
+    this.createdAt = DateTime.now();
+    this.updatedAt = DateTime.now();
+  }
+
+  @BeforeUpdate()
+  setUpdateDate() {
+    this.updatedAt = DateTime.now();
+  }
 }

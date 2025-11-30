@@ -1,10 +1,13 @@
+import "reflect-metadata";
 import { Server } from "./server";
 import { envs } from "./envs";
 import { initializeDatabase } from "./database/postgres.config";
 import { UserController } from "@/features/auth/controllers/auth.controller";
+import { registerDependencies } from "@/core/di/register";
 
 /* Init database */
-initializeDatabase();
+await initializeDatabase();
+registerDependencies();
 
 /* Init server */
 const server = new Server();

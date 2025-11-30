@@ -2,8 +2,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
+  BeforeInsert,
+  BeforeUpdate,
 } from "typeorm";
 import { DateTime } from "luxon";
 import { luxonTransformer } from "@/database/transformers/luxon.transformer";
@@ -19,17 +19,28 @@ export class Genre {
   @Column({ type: "boolean" })
   active: boolean;
 
-  @CreateDateColumn({
+  @Column({
     name: "created_at",
     type: "timestamp",
     transformer: luxonTransformer,
   })
   createdAt: DateTime;
 
-  @UpdateDateColumn({
+  @Column({
     name: "updated_at",
     type: "timestamp",
     transformer: luxonTransformer,
   })
   updatedAt: DateTime;
+
+  @BeforeInsert()
+  setCreationDate() {
+    this.createdAt = DateTime.now();
+    this.updatedAt = DateTime.now();
+  }
+
+  @BeforeUpdate()
+  setUpdateDate() {
+    this.updatedAt = DateTime.now();
+  }
 }

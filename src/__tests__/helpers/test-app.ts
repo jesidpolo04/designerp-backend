@@ -1,8 +1,16 @@
 import { DataSource } from "typeorm";
 import { newDb } from "pg-mem";
-import { Student } from "@/entities";
+import { container } from "tsyringe";
+import { User } from "@/features/auth/models/user";
+import { Genre } from "@/features/auth/models/genre";
+import { Rol } from "@/features/auth/models/rol";
 import { Server } from "@/server";
 import express from "express";
+import {
+  USER_REPOSITORY,
+  GENRE_REPOSITORY,
+  ROL_REPOSITORY,
+} from "@/core/di/tokens";
 
 export async function createTestDataSource(): Promise<DataSource> {
   const db = newDb();
@@ -25,7 +33,7 @@ export async function createTestDataSource(): Promise<DataSource> {
 
   const dataSource = await db.adapters.createTypeormDataSource({
     type: "postgres",
-    entities: [Student],
+    entities: [User, Genre, Rol],
   });
 
   await dataSource.initialize();
@@ -34,8 +42,23 @@ export async function createTestDataSource(): Promise<DataSource> {
   return dataSource;
 }
 
+export function registerTestDependencies(dataSource: DataSource) {
+  container.register(USER_REPOSITORY, {
+    useValue: dataSource.getRepository(User),
+  });
+
+  container.register(GENRE_REPOSITORY, {
+    useValue: dataSource.getRepository(Genre),
+  });
+
+  container.register(ROL_REPOSITORY, {
+    useValue: dataSource.getRepository(Rol),
+  });
+}
+
 export async function createTestApp(): Promise<express.Application> {
   const dataSource = await createTestDataSource();
+  registerTestDependencies(dataSource);
   const server = new Server(dataSource);
   return server.getApp();
 }

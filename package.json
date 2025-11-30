@@ -38,6 +38,7 @@
     "reflect-metadata": "^0.2.2",
     "swagger-ui-express": "^5.0.1",
     "tsx": "^4.20.6",
+    "tsyringe": "^4.10.0",
     "typeorm": "^0.3.27",
     "zod": "^4.1.12"
   },

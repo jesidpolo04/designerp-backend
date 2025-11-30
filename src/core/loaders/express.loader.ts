@@ -1,4 +1,5 @@
 import { Application, Request, Response, NextFunction } from "express";
+import { container } from "tsyringe";
 import { routeRegistry } from "@/decorators/metada.registry";
 
 // Recibimos la app de express y una lista de CLASES de controladores
@@ -8,9 +9,10 @@ export function registerRoutes(
   app: Application,
   controllers: ControllerClass[]
 ) {
-  // 1. Instanciamos cada controlador
-  // (Nota: Si usaras inyección de dependencias, aquí usarías container.resolve)
-  const instances = controllers.map((CtrlClass) => new CtrlClass());
+  // 1. Instanciamos cada controlador usando el contenedor de inyección de dependencias
+  const instances = controllers.map((CtrlClass) =>
+    container.resolve(CtrlClass)
+  );
 
   // 2. Recorremos nuestro registro de metadatos
   routeRegistry.forEach((route) => {
