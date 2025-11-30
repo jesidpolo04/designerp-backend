@@ -1,7 +1,9 @@
 import { DataSource } from "typeorm";
 import { envs } from "@/envs";
-import { Student } from "@/entities";
 import { logger } from "@/logging";
+import { Genre } from "@/features/auth/models/genre";
+import { Rol } from "@/features/auth/models/rol";
+import { User } from "@/features/auth/models/user";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -12,9 +14,7 @@ export const AppDataSource = new DataSource({
   database: envs.DB_NAME,
   synchronize: true,
   logging: false,
-  entities: [
-    /* Student, */
-  ],
+  entities: [Genre, Rol, User],
   subscribers: [],
   migrations: [],
   poolSize: envs.POOL_MAX_CONNECTIONS,

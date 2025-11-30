@@ -1,3 +1,11 @@
 {
-  "typescript.preferences.importModuleSpecifier": "non-relative"
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "material-icon-theme.folders.associations": {
+      "dtos": "interface",
+      "dto": "interface",
+      "migrations": "database",
+      "adapters": "plug",
+      "core": "app",
+      "use-cases": "job"
+  }
 }
