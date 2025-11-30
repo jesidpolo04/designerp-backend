@@ -38,6 +38,9 @@ export class Server {
   public listen(port: number): void {
     this.app.listen(port, () => {
       logger.info(`Server is running on http://localhost:${port}`);
+      logger.info(
+        `Swagger docs available at http://localhost:${port}/api-docs`
+      );
     });
   }
 

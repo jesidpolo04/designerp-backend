@@ -7,6 +7,8 @@ export interface RouteDefinition {
   summary?: string;
   tags?: string[];
   bodyDto?: any; // Aquí guardaremos la clase del DTO (Constructor)
+  queryDto?: any; // DTO para query params
+  paramsDto?: any; // DTO para route params
   handlerName: string; // El nombre del método del controlador (para depurar)
   middlewares: RequestHandler[];
 }
