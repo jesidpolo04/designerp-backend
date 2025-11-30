@@ -1,9 +1,12 @@
 import express from "express";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+
 import { DataSource } from "typeorm";
-import { appRouter } from "@/router";
 import { logger } from "./logging";
 import { contextMiddleware } from "./middlewares/context.middleware";
+import { registerRoutes as routesLoader } from "@/core/loaders/express.loader";
+import { generateSwaggerSpec } from "./swagger";
 
 export class Server {
   private readonly app: express.Application;
@@ -18,8 +21,18 @@ export class Server {
     if (dataSource) {
       this.app.locals.dataSource = dataSource;
     }
+  }
 
-    this.app.use(appRouter);
+  public registerRoutes(controllers: any[]): Server {
+    // Importamos el cargador de rutas
+    routesLoader(this.app, controllers);
+    return this;
+  }
+
+  public addSwagger(): Server {
+    const swaggerSpec = generateSwaggerSpec();
+    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    return this;
   }
 
   public listen(port: number): void {

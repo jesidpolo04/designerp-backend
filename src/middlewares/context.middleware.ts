@@ -1,12 +1,12 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, RequestHandler } from "express";
 import { runWithContext } from "../logging";
 import { randomUUID } from "crypto";
 
-export function contextMiddleware(
+export const contextMiddleware: RequestHandler = (
   req: Request,
   res: Response,
   next: NextFunction
-) {
+) => {
   const requestId = (req.headers["x-request-id"] as string) || randomUUID();
 
   const context = {
@@ -19,4 +19,4 @@ export function contextMiddleware(
   runWithContext(context, () => {
     next();
   });
-}
+};
