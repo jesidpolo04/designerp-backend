@@ -23,16 +23,12 @@ export default {
       },
     ],
   },
-  testMatch: [
-    "**/__tests__/unit/**/*.unit.test.ts",
-    "**/__tests__/e2e/**/*.e2e.test.ts",
+  testMatch: ["**/__tests__/e2e/**/*.e2e.test.ts"],
+  collectCoverageFrom: ["src/**/*.ts", "!src/**/*.d.ts", "!src/main.ts"],
+  setupFilesAfterEnv: [
+    "<rootDir>/src/__tests__/setup.ts",
+    "<rootDir>/src/__tests__/e2e/setup.e2e.ts",
   ],
-  collectCoverageFrom: [
-    "src/**/*.ts",
-    "!src/**/*.d.ts",
-    "!src/main.ts",
-    "!src/**/__tests__/**",
-  ],
-  setupFilesAfterEnv: ["<rootDir>/src/__tests__/setup.ts"],
-  projects: ["<rootDir>/jest.config.unit.js", "<rootDir>/jest.config.e2e.js"],
+  displayName: "e2e",
+  testTimeout: 30000, // E2E tests may take longer
 };

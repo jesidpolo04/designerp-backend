@@ -8,11 +8,6 @@ import { logger } from "@/logging";
 import { CreateUserUseCase } from "@/features/auth/use-cases/create-user.use-case";
 import { IsString } from "class-validator";
 
-export class QueryDto {
-  @IsString()
-  search!: string;
-}
-
 @injectable()
 export class UserController {
   constructor(
@@ -21,14 +16,12 @@ export class UserController {
 
   @Post("/api/users", "Crea un nuevo usuario en el sistema")
   @ValidateBody(CreateUserDto)
-  @ValidateQuery(QueryDto)
   @Use(contextMiddleware)
   async createUser(
-    req: Request<unknown, unknown, CreateUserDto, QueryDto>,
+    req: Request<unknown, unknown, CreateUserDto>,
     res: Response
   ) {
     logger.info(req.body, `Creating a new user with email: ${req.body.email}`);
-    logger.info(req.query, `Query parameters: ${req.query.search}`);
     const user = await this.createUserUseCase.execute(req.body);
 
     return res.status(201).json(user);

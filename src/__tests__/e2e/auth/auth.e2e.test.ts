@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import request from "supertest";
 import { UserController } from "@/features/auth/controllers/auth.controller";
-import { TestEnvironment } from "./helpers/test-environment";
-import { AuthFactory } from "./helpers/auth.factory";
+import { TestEnvironment } from "@/__tests__/helpers/setup/test-environment";
+import { AuthFactory } from "@/__tests__/helpers/factories/auth.factory";
 import { Genre } from "@/features/auth/models/genre";
 import { Rol } from "@/features/auth/models/rol";
 
