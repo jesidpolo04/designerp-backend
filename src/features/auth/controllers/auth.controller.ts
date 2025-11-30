@@ -3,6 +3,7 @@ import { Post, ValidateBody } from "@/decorators";
 import { CreateUserDto } from "@/features/auth/dtos/create-user.dto";
 import { Use } from "@/decorators/use";
 import { contextMiddleware } from "@/middlewares/context.middleware";
+import { addContext, logger } from "@/logging";
 
 export class UserController {
   @Post("/hello-world", "Crea un nuevo usuario en el sistema")
@@ -13,8 +14,8 @@ export class UserController {
     res: Response
   ) {
     const { email, name } = req.body;
-
-    console.log(`Creando usuario: ${name}`);
+    addContext({ userEmail: email });
+    logger.debug(`Creating user with email: ${email} and name: ${name}`);
 
     return res.status(201).json({
       success: true,

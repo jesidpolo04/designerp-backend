@@ -4,6 +4,7 @@ import { AsyncLocalStorage } from "async_hooks";
 export const asyncLocalStorage = new AsyncLocalStorage<Record<string, any>>();
 
 export const logger = pino({
+  level: "debug",
   mixin: () => {
     const context = asyncLocalStorage.getStore();
     return context || {};
