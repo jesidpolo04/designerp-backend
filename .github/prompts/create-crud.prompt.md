@@ -13,13 +13,14 @@ Create the entity class using TypeORM decorators.
   - Implement `@BeforeInsert` and `@BeforeUpdate` hooks to manage `createdAt` and `updatedAt` automatically.
   - Use `@Entity({ name: 'table_name' })`.
 
-## Step 2: Create the DTO
+## Step 2: Create the DTOs
 
-Create a Data Transfer Object (DTO) for the creation/update use cases.
+Create Data Transfer Objects (DTO) for creation/update, query parameters, and route parameters.
 
 - **Reference**: See `src/features/auth/dtos/create-user.dto.ts`.
 - **Requirements**:
   - Use `class-validator` decorators (`@IsString`, `@IsInt`, `@IsEmail`, `@MaxLength`, etc.) to validate fields.
+  - Create separate DTOs for Body, Query, and Params if needed.
 
 ## Step 3: Create the Use Case
 
@@ -38,7 +39,8 @@ Create the controller to handle HTTP requests.
 
 - **Reference**: See `src/features/auth/controllers/auth.controller.ts`.
 - **Requirements**:
-  - Use custom decorators: `@ApiRoute` (or `@Post`, `@Get`, etc.), `@Use` (for middlewares), and `@ValidateBody`.
+  - Use custom decorators: `@ApiRoute` (or `@Post`, `@Get`, etc.), `@Use` (for middlewares).
+  - Use Validation decorators: `@ValidateBody`, `@ValidateQuery`, and `@ValidateParams` from `src/decorators` to validate inputs using the DTOs created in Step 2.
   - Inject the Use Case in the constructor.
   - Return appropriate HTTP responses.
   - **Registration**: If this is a new controller, ensure it is registered in `src/main.ts` via `server.registerRoutes([...])`.

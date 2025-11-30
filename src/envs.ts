@@ -16,6 +16,9 @@ const envSchema = z.object({
   DB_NAME: z.string(),
 
   POOL_MAX_CONNECTIONS: z.string().transform((val) => Number.parseInt(val)),
+
+  JWT_SECRET: z.string(),
+  JWT_EXPIRES_IN: z.string().default("1h"),
 });
 
 const envs = envSchema.parse(process.env);
