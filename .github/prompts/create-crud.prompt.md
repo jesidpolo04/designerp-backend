@@ -1,63 +1,173 @@
-# Create CRUD operations for a given entity
+# Prompt para Crear Nuevo Recurso CRUD
 
-You are an expert TypeScript developer. Your task is to create CRUD (Create, Read, Update, Delete) operations for a given entity in a TypeScript project using TypeORM, tsyringe, and Express. Follow these steps strictly:
+## Objetivo
 
-## Step 1: Create the Entity
+Crear un recurso completo con todos los componentes necesarios para operaciones CRUD en NestJS + TypeORM + SQL Server.
 
-Create the entity class using TypeORM decorators.
+## Especificaciones del Recurso
 
-- **Reference**: See `src/features/auth/models/user.ts`.
-- **Requirements**:
-  - Use `luxonTransformer` for `DateTime` columns (created_at, updated_at).
-  - Initialize `@Column` decorators with at least the `type` attribute.
-  - Implement `@BeforeInsert` and `@BeforeUpdate` hooks to manage `createdAt` and `updatedAt` automatically.
-  - Use `@Entity({ name: 'table_name' })`.
+**Nombre del recurso**: `[NOMBRE_RECURSO]` (ejemplo: `User`, `Product`, `Category`)
+**Campos requeridos**: `[LISTA_DE_CAMPOS]`
 
-## Step 2: Create the DTOs
+## Componentes a Crear
 
-Create Data Transfer Objects (DTO) for creation/update, query parameters, and route parameters.
+### 1. Modelo TypeORM (Entidad)
 
-- **Reference**: See `src/features/auth/dtos/create-user.dto.ts`.
-- **Requirements**:
-  - Use `class-validator` decorators (`@IsString`, `@IsInt`, `@IsEmail`, `@MaxLength`, etc.) to validate fields.
-  - Create separate DTOs for Body, Query, and Params if needed.
+- **Ubicación**: `src/[recurso-plural]/entities/[recurso-singular].entity.ts`
+- **Características**:
+  - Usar decorador `@Entity({ name: 'tabla_nombre' })`
+  - Primary key con `@PrimaryGeneratedColumn('increment')` (tipo `number`)
+  - Campos de auditoría obligatorios:
+    - `createdAt: DateTime` con `@CreateDateColumn({ name: 'created_at' })`
+    - `updatedAt: DateTime` con `@UpdateDateColumn({ name: 'updated_at' })`
+  - Usar `DateTime` de Luxon para todos los campos de fecha/hora
+  - Importar: `import { DateTime } from 'luxon';`
+  - Aplicar validaciones con decoradores de `class-validator` cuando corresponda
+  - Usar `snake_case` para nombres de columnas en BD
+  - Incluir campo `isActive: boolean` por defecto con `@Column({ default: true, name: 'is_active' })`
 
-## Step 3: Create the Use Case
+### 2. Migración TypeORM
 
-Create a Use Case service to handle the business logic.
+- **Ubicación**: `src/database/migrations/[timestamp]-create-[recurso-plural].ts`
+- **Características**:
+  - Generar con comando: `npm run typeorm migration:generate`
+  - Incluir todas las columnas definidas en la entidad
+  - Usar tipos SQL Server apropiados
+  - Incluir índices necesarios (unique, foreign keys, etc.)
+  - Verificar que los campos DateTime se mapeen correctamente
 
-- **Reference**: See `src/features/auth/use-cases/create-user.use-case.ts`.
-- **Requirements**:
-  - Use `@injectable()` from `tsyringe`.
-  - Inject repositories using `@inject(TOKEN)`.
-  - Implement an `execute` method that accepts the DTO.
-  - Handle business logic (validations, relation checks) before saving to the database.
+### 3. Servicio NestJS
 
-## Step 4: Create the Controller
+- **Ubicación**: `src/[recurso-plural]/[recurso-plural].service.ts`
+- **Características**:
+  - Decorador `@Injectable()`
+  - Inyectar repositorio con `@InjectRepository([RecursoEntity])`
+  - Métodos básicos CRUD:
+    - `create(data: Create[Recurso]Dto): Promise<[Recurso]Entity>`
+    - `findAll(filters?: any): Promise<[Recurso]Entity[]>`
+    - `findOne(id: number): Promise<[Recurso]Entity>`
+    - `update(id: number, data: Update[Recurso]Dto): Promise<[Recurso]Entity>`
+    - `remove(id: number): Promise<void>` (soft delete usando `isActive = false`)
+  - Manejo de errores con excepciones de Nest (`NotFoundException`, etc.)
+  - Validaciones de negocio si aplica
 
-Create the controller to handle HTTP requests.
+### 4. Controlador NestJS
 
-- **Reference**: See `src/features/auth/controllers/auth.controller.ts`.
-- **Requirements**:
-  - Use custom decorators: `@ApiRoute` (or `@Post`, `@Get`, etc.), `@Use` (for middlewares).
-  - Use Validation decorators: `@ValidateBody`, `@ValidateQuery`, and `@ValidateParams` from `src/decorators` to validate inputs using the DTOs created in Step 2.
-  - Inject the Use Case in the constructor.
-  - Return appropriate HTTP responses.
-  - **Registration**: If this is a new controller, ensure it is registered in `src/main.ts` via `server.registerRoutes([...])`.
+- **Ubicación**: `src/[recurso-plural]/[recurso-plural].controller.ts`
+- **Características**:
+  - Decorador `@Controller('[recurso-plural]')`
+  - Endpoints REST completos:
+    - `POST /[recurso-plural]` → `@Post()` + `@Body() createDto`
+    - `GET /[recurso-plural]` → `@Get()` + query filters opcionales
+    - `GET /[recurso-plural]/:id` → `@Get(':id')` + `@Param('id')`
+    - `PATCH /[recurso-plural]/:id` → `@Patch(':id')` + `@Param('id')` + `@Body() updateDto`
+    - `DELETE /[recurso-plural]/:id` → `@Delete(':id')` + `@Param('id')`
+  - Usar DTOs para validación de entrada
+  - Códigos de estado HTTP apropiados (`@HttpCode()`)
+  - Transformación de respuestas si es necesario
 
-## Step 5: Create E2E Tests
+### 5. DTOs (Data Transfer Objects)
 
-Create End-to-End tests to verify the correctness of each endpoint.
+- **Ubicación**: `src/[recurso-plural]/dto/`
+- **Archivos**:
+  - `create-[recurso-singular].dto.ts`
+  - `update-[recurso-singular].dto.ts`
+- **Características**:
+  - Usar decoradores de `class-validator` para validación
+  - `Update` DTO debe extender `PartialType(Create[Recurso]Dto)`
+  - Excluir campos de auditoría (`id`, `createdAt`, `updatedAt`) de DTOs de entrada
+  - Incluir validaciones apropiadas (`@IsString()`, `@IsOptional()`, etc.)
+  - Utilizar el decorador `@ApiProperty()` de `@nestjs/swagger` para documentación automática, en los campos necesarios.
 
-- **Reference**: See `src/__tests__/auth.e2e.test.ts`.
-- **Requirements**:
-  - Use `TestEnvironment` helper to setup the test database and server.
-  - Use or create a Factory (like `AuthFactory`) to generate test data and handle seeding.
-  - Test success scenarios (200/201 status codes).
-  - Test failure scenarios (400/404/500 status codes).
-  - Verify the response body matches the expected structure.
+### 6. Módulo NestJS
 
-Notes:
+- **Ubicación**: `src/[recurso-plural]/[recurso-plural].module.ts`
+- **Características**:
+  - Importar `TypeOrmModule.forFeature([[Recurso]Entity])`
+  - Registrar controller y service en sus respectivos arrays
+  - Exportar service si otros módulos lo necesitan
+  - Importar en `AppModule`
 
-- Follow the existing project structure and naming conventions.
-- Ensure all dependencies are properly imported.
+### 7. Testing Unitario
+
+- **Estructura de carpetas**: Replicar estructura de `src/` en carpeta `test/`
+  - `test/[recurso-plural]/[recurso-plural].service.spec.ts`
+  - `test/[recurso-plural]/[recurso-plural].controller.spec.ts`
+- **Características del testing**:
+  - Usar `@nestjs/testing` para `Test.createTestingModule()`
+  - Mockear repository con `jest.fn()` o factory functions
+  - Cubrir todos los métodos públicos del service y controller
+  - Tests para casos exitosos y de error
+  - Usar `describe` y `it` con nombres descriptivos
+  - Setup y cleanup apropiados con `beforeEach` y `afterEach`
+  - Verificar llamadas a métodos mockeados con `expect().toHaveBeenCalledWith()`
+
+## Consideraciones Especiales
+
+### Fechas y Tiempo
+
+- **IMPORTANTE**: Usar `DateTime` de Luxon en las entidades, NO `Date` de JavaScript
+- Importar: `import { DateTime } from 'luxon';`
+- TypeORM manejará la conversión automáticamente
+- En tests, crear fechas con `DateTime.now()` para mocks
+
+### Estructura de Archivos
+
+```
+src/
+├── [recurso-plural]/
+│   ├── dto/
+│   │   ├── create-[recurso-singular].dto.ts
+│   │   └── update-[recurso-singular].dto.ts
+│   ├── entities/
+│   │   └── [recurso-singular].entity.ts
+│   ├── [recurso-plural].controller.ts
+│   ├── [recurso-plural].service.ts
+│   └── [recurso-plural].module.ts
+
+test/
+├── [recurso-plural]/
+│   ├── [recurso-plural].controller.spec.ts
+│   └── [recurso-plural].service.spec.ts
+```
+
+### Base de Datos
+
+- Usar SQL Server como motor principal
+- Nombres de tablas en `snake_case` y plural
+- Nombres de columnas en `snake_case`
+- Incluir siempre campos de auditoría (`created_at`, `updated_at`)
+- Soft delete mediante campo `is_active`
+
+### Validación y Errores
+
+- Usar `class-validator` para DTOs
+- Lanzar excepciones apropiadas de Nest (`NotFoundException`, `BadRequestException`)
+- Validaciones de negocio en el service, no en el controller
+- Mensajes de error descriptivos
+
+## Ejemplo de Uso del Prompt
+
+```
+Crea un recurso CRUD completo para gestionar **Usuarios** con los siguientes campos:
+- firstName (string, requerido, máx 50 caracteres)
+- lastName (string, requerido, máx 50 caracteres)
+- email (string, requerido, único, formato email)
+- birthDate (DateTime, opcional)
+- phone (string, opcional, máx 20 caracteres)
+
+Sigue todas las especificaciones del prompt de creación de recursos.
+```
+
+## Checklist de Verificación
+
+- [ ] Entidad TypeORM creada con DateTime de Luxon
+- [ ] Migración generada y aplicada
+- [ ] Service con métodos CRUD completos
+- [ ] Controller con endpoints REST
+- [ ] DTOs con validaciones
+- [ ] Módulo configurado e importado en AppModule
+- [ ] Tests unitarios para service y controller
+- [ ] Estructura de carpetas replicada en test/
+- [ ] Compilación sin errores
+- [ ] Tests ejecutándose correctamente

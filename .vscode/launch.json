@@ -2,14 +2,36 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug: npm run dev",
-      "request": "launch",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "skipFiles": ["<node_internals>/**"],
       "type": "node",
+      "request": "launch",
+      "name": "NestJS: debug (build + dist)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:debug"],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "autoAttachChildProcesses": true,
+      "restart": true,
+      "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "NestJS: Dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:dev"],
+      "console": "integratedTerminal",
+      "autoAttachChildProcesses": true,
+      "restart": true,
+      "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "NestJS: attach a proceso",
+      "port": 9229,
+      "restart": true,
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }

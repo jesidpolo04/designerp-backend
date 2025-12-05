@@ -2,23 +2,32 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  ManyToOne,
+  JoinColumn,
   BeforeInsert,
   BeforeUpdate,
-  OneToMany,
 } from "typeorm";
 import { DateTime } from "luxon";
 import { luxonTransformer } from "@/database/transformers/luxon.transformer";
+import { Permission } from "./permission";
+import { Rol } from "./rol";
 
-@Entity({ name: "roles" })
-export class Rol {
+@Entity({ name: "permission_rol" })
+export class PermissionRol {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar", length: 100 })
-  name: string;
+  @ManyToOne(() => Permission, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "permission_id" })
+  permission: Permission;
 
-  @Column({ type: "boolean" })
-  active: boolean;
+  @ManyToOne(() => Rol, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "rol_id" })
+  rol: Rol;
 
   @Column({
     name: "created_at",

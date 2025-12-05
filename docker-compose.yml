@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sql_server_db
+    # 1. Forzamos usuario root para evitar problemas de permisos en WSL2
+    user: root 
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=TuPasswordFuerte123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - C:\Trabajo\Corona\sql-server-volume:/var/opt/mssql
+
+volumes:
+  sql_data:
