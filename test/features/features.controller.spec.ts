@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DateTime } from 'luxon';
 import { FeaturesController } from '../../src/features/features.controller';
 import { FeaturesService } from '../../src/features/features.service';
+import { TestPinoLoggerModule } from '../pino-test.config';
 import { Feature } from '../../src/features/entities/feature.entity';
 import { CreateFeatureDto } from '../../src/features/dto/create-feature.dto';
 import { UpdateFeatureDto } from '../../src/features/dto/update-feature.dto';
@@ -29,6 +30,7 @@ describe('FeaturesController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [TestPinoLoggerModule],
       controllers: [FeaturesController],
       providers: [
         {
