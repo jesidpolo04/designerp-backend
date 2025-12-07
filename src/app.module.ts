@@ -15,6 +15,8 @@ import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { IdentificationType } from './identification-types/entities/identification-type.entity';
 import { IdentificationTypesModule } from './identification-types/identification-types.module';
+import { Permission } from './permissions/entities/permission.entity';
+import { PermissionsModule } from './permissions/permissions.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from './shared/guards/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
@@ -32,7 +34,7 @@ import { pinoConfig } from './config/pino.config';
       username: process.env.DB_USERNAME ?? 'root',
       password: process.env.DB_PASSWORD ?? 'root',
       database: process.env.DB_NAME ?? 'erika-trujillo',
-      entities: [Rol, Feature, Genre, Department, User, IdentificationType],
+      entities: [Rol, Feature, Genre, Department, User, IdentificationType, Permission],
       autoLoadEntities: true,
       synchronize: process.env.DB_SYNCHRONIZE === 'true',
       retryAttempts: 3,
@@ -43,6 +45,7 @@ import { pinoConfig } from './config/pino.config';
     DepartmentsModule,
     UsersModule,
     IdentificationTypesModule,
+    PermissionsModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
