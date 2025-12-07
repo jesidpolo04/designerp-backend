@@ -63,6 +63,11 @@ export class UsersService {
     const user = this.userRepository.create({
       username: createUserDto.username,
       passwordHash,
+      firstName: createUserDto.firstName,
+      secondName: createUserDto.secondName ?? null,
+      firstLastname: createUserDto.firstLastname,
+      secondLastname: createUserDto.secondLastname ?? null,
+      email: createUserDto.email,
       role,
       genre,
       department: department ?? null,
@@ -97,6 +102,26 @@ export class UsersService {
 
     if (updateUserDto.password) {
       user.passwordHash = await this.hashPassword(updateUserDto.password);
+    }
+
+    if (updateUserDto.firstName !== undefined) {
+      user.firstName = updateUserDto.firstName;
+    }
+
+    if (updateUserDto.secondName !== undefined) {
+      user.secondName = updateUserDto.secondName ?? null;
+    }
+
+    if (updateUserDto.firstLastname !== undefined) {
+      user.firstLastname = updateUserDto.firstLastname;
+    }
+
+    if (updateUserDto.secondLastname !== undefined) {
+      user.secondLastname = updateUserDto.secondLastname ?? null;
+    }
+
+    if (updateUserDto.email !== undefined) {
+      user.email = updateUserDto.email;
     }
 
     if (updateUserDto.roleId !== undefined) {

@@ -61,6 +61,11 @@ describe('UsersService', () => {
     id: 1,
     username: 'jdoe',
     passwordHash: 'hashed-password',
+    firstName: 'John',
+    secondName: 'Michael',
+    firstLastname: 'Doe',
+    secondLastname: 'Smith',
+    email: 'john.doe@example.com',
     role: mockRole,
     genre: mockGenre,
     department: mockDepartment,
@@ -108,6 +113,11 @@ describe('UsersService', () => {
       const createUserDto: CreateUserDto = {
         username: 'jdoe',
         password: 'P@ssw0rd!',
+        firstName: 'John',
+        secondName: 'Michael',
+        firstLastname: 'Doe',
+        secondLastname: 'Smith',
+        email: 'john.doe@example.com',
         roleId: 1,
         genreId: 1,
         departmentId: 1,
@@ -133,6 +143,11 @@ describe('UsersService', () => {
       expect(userRepository.create).toHaveBeenCalledWith({
         username: 'jdoe',
         passwordHash: 'hashed-password',
+        firstName: 'John',
+        secondName: 'Michael',
+        firstLastname: 'Doe',
+        secondLastname: 'Smith',
+        email: 'john.doe@example.com',
         role: mockRole,
         genre: mockGenre,
         department: mockDepartment,
@@ -148,6 +163,9 @@ describe('UsersService', () => {
       const createUserDto: CreateUserDto = {
         username: 'jdoe',
         password: 'P@ssw0rd!',
+        firstName: 'John',
+        firstLastname: 'Doe',
+        email: 'john.doe@example.com',
         roleId: 1,
         genreId: 1,
       };
@@ -164,6 +182,9 @@ describe('UsersService', () => {
       const createUserDto: CreateUserDto = {
         username: 'jdoe',
         password: 'P@ssw0rd!',
+        firstName: 'John',
+        firstLastname: 'Doe',
+        email: 'john.doe@example.com',
         roleId: 1,
         genreId: 1,
       };
@@ -181,6 +202,9 @@ describe('UsersService', () => {
       const createUserDto: CreateUserDto = {
         username: 'jdoe',
         password: 'P@ssw0rd!',
+        firstName: 'John',
+        firstLastname: 'Doe',
+        email: 'john.doe@example.com',
         roleId: 1,
         genreId: 1,
         departmentId: 1,
